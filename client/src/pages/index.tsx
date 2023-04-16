@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { io } from 'socket.io-client'
+import Canvas from '@/components/Canvas'
 
 const socket = io('http://localhost:8080')
 
@@ -10,6 +11,7 @@ export default function Home() {
         <div>
             <h1 className="text-lg p-5">Krash</h1>
             <button>PLAY</button>
+            <Canvas />
         </div>
     )
 }
