@@ -5,9 +5,8 @@ export default function Home() {
     useEffect(() => {}, [])
 
     return (
-        <>
-            <h1 className="text-lg p-5">KrashDummy</h1>
-            <Canvas />
-        </>
+        <div className="flex justify-center items-center h-screen w-screen">
+            <Canvas width={window.outerHeight} height={window.outerHeight} />
+        </div>
     )
 }
