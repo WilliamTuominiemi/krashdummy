@@ -10,9 +10,11 @@ const Canvas: React.FC<Props> = (props) => {
 
     const draw = useCallback((ctx: CanvasRenderingContext2D, frameCount: number) => {
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+        ctx.fillStyle = '#140a14'
+        ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
         ctx.fillStyle = '#000000'
         ctx.beginPath()
-        ctx.arc(50, 100, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI)
+        ctx.arc(50, 50, 20 * Math.sin(frameCount * 0.05) ** 2, 0, 2 * Math.PI)
         ctx.fill()
     }, [])
 
