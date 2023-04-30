@@ -38,40 +38,34 @@ const Canvas: React.FC<Props> = (props) => {
 
         //Our draw came here
         const render = () => {
+            if (!changing) {
+                setChanging(true)
+                setTimeout(() => {
+                    let v_i = mouseX - x
+                    let v_j = mouseY - y
+
+                    const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
+
+                    let unit_v_i = v_i / len
+                    let unit_v_j = v_j / len
+
+                    if (!isNaN(unit_v_i / 2 + x) || !isNaN(unit_v_j / 2 + y)) {
+                        setX(unit_v_i / 2 + x)
+                        setY(unit_v_j / 2 + y)
+                    }
+
+                    setChanging(false)
+                }, 10)
+            }
             draw(context!)
             animationFrameId = window.requestAnimationFrame(render)
         }
         render()
 
-        if (!changing) {
-            setChanging(true)
-            console.log('chanign')
-            setTimeout(() => {
-                let v_i = mouseX - x
-                let v_j = mouseY - y
-                console.log(`${x}: ${y}`)
-
-                const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
-                console.log(`${len}`)
-
-                let unit_v_i = v_i / len
-                let unit_v_j = v_j / len
-                console.log(`${v_i}: ${v_j}`)
-
-                if (!isNaN(unit_v_i) || !isNaN(unit_v_j)) {
-                    setX(unit_v_i / 2 + x)
-                    setY(unit_v_j / 2 + y)
-                }
-
-                console.log(`${unit_v_i}: ${unit_v_j}`)
-                setChanging(false)
-            }, 10)
-        }
-
         return () => {
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [draw])
+    }, [draw, mouseX, mouseY, x, y, changing])
 
     const followMouse = (e: any) => {
         setMouseX(e.clientX - e.target.offsetLeft)
