@@ -64,13 +64,26 @@ const Canvas: React.FC<Props> = (props) => {
     )
 
     useEffect(() => {
-        setInterval(function () {
-            setResetCanvas(true)
-        }, 10000)
+        const step = 100
+
+        if (canvasRef.current) {
+            const wait = (canvasRef.current?.width / 10) * step * 2 + (canvasRef.current?.height / 10) * step * 2
+
+            console.log((canvasRef.current?.width / 10) * step * 2)
+            console.log((canvasRef.current?.height / 10) * step * 2)
+
+            console.log(wait)
+
+            setInterval(function () {
+                setResetCanvas(true)
+                setFrameX(0)
+                setFrameY(0)
+            }, (canvasRef.current?.width / 10) * step * 2 + (canvasRef.current?.height / 10) * step * 2)
+        }
 
         setInterval(function () {
             setUpdateFrame(true)
-        }, 100)
+        }, step)
     }, [])
 
     useEffect(() => {
@@ -116,8 +129,6 @@ const Canvas: React.FC<Props> = (props) => {
                 setXDir(unit_v_i)
                 setYDir(unit_v_j)
             }
-
-            // console.log(`[${mouseX}; ${mouseY}]`)
         }
     }
 
