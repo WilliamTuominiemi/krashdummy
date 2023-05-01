@@ -40,20 +40,18 @@ const Canvas: React.FC<Props> = (props) => {
         const render = () => {
             if (!changing) {
                 setChanging(true)
+                let v_i = mouseX - x
+                let v_j = mouseY - y
+
+                const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
+                let unit_v_i = v_i / len
+                let unit_v_j = v_j / len
+
                 setTimeout(() => {
-                    let v_i = mouseX - x
-                    let v_j = mouseY - y
-
-                    const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
-
-                    let unit_v_i = v_i / len
-                    let unit_v_j = v_j / len
-
                     if (!isNaN(unit_v_i / 2 + x) || !isNaN(unit_v_j / 2 + y)) {
                         setX(unit_v_i / 2 + x)
                         setY(unit_v_j / 2 + y)
                     }
-
                     setChanging(false)
                 }, 10)
             }
