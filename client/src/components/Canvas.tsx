@@ -9,19 +9,22 @@ interface Props {
 const Canvas: React.FC<Props> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
-    const [mouseX, setMouseX] = useState(0)
-    const [mouseY, setMouseY] = useState(0)
-
     const [x, setX] = useState(0)
     const [y, setY] = useState(0)
 
     const [changing, setChanging] = useState(false)
 
+    const [xDir, setXDir] = useState(0)
+    const [yDir, setYDir] = useState(0)
+
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
-            // ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-            ctx.fillStyle = '#140a14'
-            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+            const time = Date.now()
+            if (time % 10000 === 0) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                ctx.fillStyle = '#140a14'
+                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+            }
             ctx.fillStyle = '#000000'
             ctx.beginPath()
             ctx.arc(x, y, 5, 0, 2 * Math.PI)
@@ -40,18 +43,14 @@ const Canvas: React.FC<Props> = (props) => {
         const render = () => {
             if (!changing) {
                 setChanging(true)
-                let v_i = mouseX - x
-                let v_j = mouseY - y
-
-                const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
-                let unit_v_i = v_i / len
-                let unit_v_j = v_j / len
 
                 setTimeout(() => {
-                    if (!isNaN(unit_v_i / 2 + x) || !isNaN(unit_v_j / 2 + y)) {
-                        setX(unit_v_i / 2 + x)
-                        setY(unit_v_j / 2 + y)
+                    const speed = 5
+                    if (!isNaN(xDir / speed + x) || !isNaN(yDir / speed + y)) {
+                        setX(xDir / speed + x)
+                        setY(yDir / speed + y)
                     }
+
                     setChanging(false)
                 }, 10)
             }
@@ -63,14 +62,26 @@ const Canvas: React.FC<Props> = (props) => {
         return () => {
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [draw, mouseX, mouseY, x, y, changing])
+    }, [draw, x, y, changing, xDir, yDir])
 
     const followMouse = (e: any) => {
-        setMouseX(e.clientX - e.target.offsetLeft)
-        setMouseY(e.clientY - e.target.offsetTop)
+        if (e.buttons === 1) {
+            let v_i = e.clientX - e.target.offsetLeft - x
+            let v_j = e.clientY - e.target.offsetTop - y
 
-        // console.log(`[${mouseX}; ${mouseY}]`)
+            const len = Math.sqrt((Math.abs(v_i) ^ 2) + (Math.abs(v_j) ^ 2))
+            let unit_v_i = v_i / len
+            let unit_v_j = v_j / len
+
+            if (len > 3) {
+                setXDir(unit_v_i)
+                setYDir(unit_v_j)
+            }
+
+            // console.log(`[${mouseX}; ${mouseY}]`)
+        }
     }
+
     return <canvas onMouseMove={(e) => followMouse(e)} ref={canvasRef} {...props} />
 }
 
