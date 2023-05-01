@@ -17,21 +17,61 @@ const Canvas: React.FC<Props> = (props) => {
     const [xDir, setXDir] = useState(0)
     const [yDir, setYDir] = useState(0)
 
+    const [frameX, setFrameX] = useState(0)
+    const [frameY, setFrameY] = useState(0)
+
+    const [resetCanvas, setResetCanvas] = useState(true)
+    const [updateFrame, setUpdateFrame] = useState(true)
+
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
-            const time = Date.now()
-            if (time % 10000 === 0) {
+            if (resetCanvas) {
+                setResetCanvas(false)
+                setFrameX(0)
+                setFrameY(0)
+
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
                 ctx.fillStyle = '#140a14'
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
             }
+            if (updateFrame) {
+                setUpdateFrame(false)
+
+                ctx.beginPath()
+                ctx.rect(frameX, frameY, 10, 10)
+                ctx.fill()
+
+                if (frameX < ctx.canvas.width - 10 && frameY === 0) {
+                    setFrameX(frameX + 10)
+                }
+                if (frameX === ctx.canvas.width - 10 && frameY < ctx.canvas.height - 10) {
+                    setFrameY(frameY + 10)
+                }
+                if (frameY === ctx.canvas.height - 10 && frameX > 0) {
+                    setFrameX(frameX - 10)
+                }
+                if (frameX === 0 && frameY > 0) {
+                    setFrameY(frameY - 10)
+                }
+            }
+
             ctx.fillStyle = '#000000'
             ctx.beginPath()
             ctx.arc(x, y, 5, 0, 2 * Math.PI)
             ctx.fill()
         },
-        [x, y]
+        [frameX, frameY, x, y, resetCanvas, updateFrame]
     )
+
+    useEffect(() => {
+        setInterval(function () {
+            setResetCanvas(true)
+        }, 10000)
+
+        setInterval(function () {
+            setUpdateFrame(true)
+        }, 100)
+    }, [])
 
     useEffect(() => {
         const canvas = canvasRef.current
@@ -39,7 +79,6 @@ const Canvas: React.FC<Props> = (props) => {
 
         let animationFrameId: number
 
-        //Our draw came here
         const render = () => {
             if (!changing) {
                 setChanging(true)

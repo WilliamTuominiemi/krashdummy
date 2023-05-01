@@ -11,7 +11,10 @@ export default function Home() {
 
     return (
         <div className="flex justify-center items-center h-screen w-screen">
-            <Canvas width={resolution[0] / 2} height={resolution[1] * (2 / 3)} />
+            <Canvas
+                width={Math.round(resolution[0] / 2 / 10) * 10}
+                height={Math.round((resolution[1] * (2 / 3)) / 10) * 10}
+            />
         </div>
     )
 }
