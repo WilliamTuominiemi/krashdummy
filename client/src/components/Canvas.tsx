@@ -9,8 +9,8 @@ interface Props {
 const Canvas: React.FC<Props> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
-    const [x, setX] = useState(0)
-    const [y, setY] = useState(0)
+    const [x, setX] = useState(10)
+    const [y, setY] = useState(10)
 
     const [changing, setChanging] = useState(false)
 
@@ -26,17 +26,23 @@ const Canvas: React.FC<Props> = (props) => {
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
-                setResetCanvas(false)
-                setFrameX(10)
-                setFrameY(0)
+                setTimeout(() => {
+                    setResetCanvas(false)
+                    setFrameX(10)
+                    setFrameY(0)
 
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-                ctx.fillStyle = '#140a14'
-                ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                    setX(10)
+                    setY(10)
+
+                    setXDir(1)
+                    setYDir(1)
+
+                    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                    ctx.fillStyle = '#140a14'
+                    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+                }, 50)
             }
             if (updateFrame) {
-                console.log(`${frameX}:::${frameY}`)
-
                 setUpdateFrame(false)
 
                 ctx.beginPath()
@@ -61,6 +67,10 @@ const Canvas: React.FC<Props> = (props) => {
                 }
             }
 
+            console.log(`${x}:${y}`)
+            if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
+            if (y < 0 || y > ctx.canvas.height) setResetCanvas(true)
+
             ctx.fillStyle = '#000000'
             ctx.beginPath()
             ctx.arc(x, y, 5, 0, 2 * Math.PI)
@@ -84,12 +94,12 @@ const Canvas: React.FC<Props> = (props) => {
         let animationFrameId: number
 
         const render = () => {
-            if (!changing) {
+            if (!changing || !resetCanvas) {
                 setChanging(true)
 
                 setTimeout(() => {
                     const speed = 5
-                    if (!isNaN(xDir / speed + x) || !isNaN(yDir / speed + y)) {
+                    if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
                         setX(xDir / speed + x)
                         setY(yDir / speed + y)
                     }
