@@ -14,10 +14,10 @@ const Canvas: React.FC<Props> = (props) => {
 
     const [changing, setChanging] = useState(false)
 
-    const [xDir, setXDir] = useState(0)
-    const [yDir, setYDir] = useState(0)
+    const [xDir, setXDir] = useState(1)
+    const [yDir, setYDir] = useState(1)
 
-    const [frameX, setFrameX] = useState(0)
+    const [frameX, setFrameX] = useState(10)
     const [frameY, setFrameY] = useState(0)
 
     const [resetCanvas, setResetCanvas] = useState(true)
@@ -27,7 +27,7 @@ const Canvas: React.FC<Props> = (props) => {
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
                 setResetCanvas(false)
-                setFrameX(0)
+                setFrameX(10)
                 setFrameY(0)
 
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
@@ -35,6 +35,8 @@ const Canvas: React.FC<Props> = (props) => {
                 ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
             }
             if (updateFrame) {
+                console.log(`${frameX}:::${frameY}`)
+
                 setUpdateFrame(false)
 
                 ctx.beginPath()
@@ -53,6 +55,10 @@ const Canvas: React.FC<Props> = (props) => {
                 if (frameX === 0 && frameY > 0) {
                     setFrameY(frameY - 10)
                 }
+                if (frameX === 0 && frameY === 0) {
+                    console.log(`${frameX}:::${frameY}`)
+                    setResetCanvas(true)
+                }
             }
 
             ctx.fillStyle = '#000000'
@@ -65,21 +71,6 @@ const Canvas: React.FC<Props> = (props) => {
 
     useEffect(() => {
         const step = 100
-
-        if (canvasRef.current) {
-            const wait = (canvasRef.current?.width / 10) * step * 2 + (canvasRef.current?.height / 10) * step * 2
-
-            console.log((canvasRef.current?.width / 10) * step * 2)
-            console.log((canvasRef.current?.height / 10) * step * 2)
-
-            console.log(wait)
-
-            setInterval(function () {
-                setResetCanvas(true)
-                setFrameX(0)
-                setFrameY(0)
-            }, (canvasRef.current?.width / 10) * step * 2 + (canvasRef.current?.height / 10) * step * 2)
-        }
 
         setInterval(function () {
             setUpdateFrame(true)
