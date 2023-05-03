@@ -38,7 +38,7 @@ const Canvas: React.FC<Props> = (props) => {
                     setYDir(1)
 
                     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
-                    ctx.fillStyle = '#140a14'
+                    ctx.fillStyle = '#242424'
                     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
                 }, 50)
             }
@@ -46,34 +46,42 @@ const Canvas: React.FC<Props> = (props) => {
                 setUpdateFrame(false)
 
                 ctx.beginPath()
-                ctx.rect(frameX, frameY, 10, 10)
+                ctx.rect(frameX, frameY, 20, 20)
+                let r = Math.floor(Math.random() * 200)
+                let g = Math.floor(Math.random() * 200)
+                let b = 256
+                let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
+                ctx.fillStyle = color
                 ctx.fill()
 
-                if (frameX < ctx.canvas.width - 10 && frameY === 0) {
+                if (frameX < ctx.canvas.width - 20 && frameY === 0) {
                     setFrameX(frameX + 10)
                 }
-                if (frameX === ctx.canvas.width - 10 && frameY < ctx.canvas.height - 10) {
+                if (frameX === ctx.canvas.width - 20 && frameY < ctx.canvas.height - 20) {
                     setFrameY(frameY + 10)
                 }
-                if (frameY === ctx.canvas.height - 10 && frameX > 0) {
+                if (frameY === ctx.canvas.height - 20 && frameX > 0) {
                     setFrameX(frameX - 10)
                 }
                 if (frameX === 0 && frameY > 0) {
                     setFrameY(frameY - 10)
                 }
                 if (frameX === 0 && frameY === 0) {
-                    console.log(`${frameX}:::${frameY}`)
                     setResetCanvas(true)
                 }
             }
 
-            console.log(`${x}:${y}`)
             if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
             if (y < 0 || y > ctx.canvas.height) setResetCanvas(true)
 
             ctx.fillStyle = '#000000'
+            let r = 256
+            let g = Math.floor(Math.random() * 100)
+            let b = Math.floor(Math.random() * 100)
+            let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
+            ctx.fillStyle = color
             ctx.beginPath()
-            ctx.arc(x, y, 5, 0, 2 * Math.PI)
+            ctx.arc(x, y, 15, 0, 2 * Math.PI)
             ctx.fill()
         },
         [frameX, frameY, x, y, resetCanvas, updateFrame]
