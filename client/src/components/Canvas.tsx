@@ -23,10 +23,13 @@ const Canvas: React.FC<Props> = (props) => {
     const [resetCanvas, setResetCanvas] = useState(true)
     const [updateFrame, setUpdateFrame] = useState(true)
 
+    const [coords, setCoords] = useState([{ x: x, y: y }])
+
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
                 setTimeout(() => {
+                    setCoords([{ x: x, y: y }])
                     setResetCanvas(false)
                     setFrameX(10)
                     setFrameY(0)
@@ -68,6 +71,22 @@ const Canvas: React.FC<Props> = (props) => {
                 }
                 if (frameX === 0 && frameY === 0) {
                     setResetCanvas(true)
+                }
+                // console.log(Math.abs(coords[coords.length - 1].x) - Math.abs(x))
+
+                // setCoords([...coords, { x: x, y: y }])
+                if (
+                    -10 > Math.abs(coords[coords.length - 1].x) - Math.abs(x) ||
+                    Math.abs(coords[coords.length - 1].x) - Math.abs(x) > 10 ||
+                    -10 > Math.abs(coords[coords.length - 1].y) - Math.abs(y) ||
+                    Math.abs(coords[coords.length - 1].y) - Math.abs(y) > 10
+                ) {
+                    setCoords([...coords, { x: x, y: y }])
+
+                    console.log(coords)
+                    // console.log(Math.abs(coords[coords.length - 1].x) - Math.abs(x))
+
+                    // console.log(coords[coords.length - 1])
                 }
             }
 
