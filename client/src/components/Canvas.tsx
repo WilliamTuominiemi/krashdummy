@@ -15,8 +15,8 @@ const Canvas: React.FC<Props> = (props) => {
 
     const [changing, setChanging] = useState(false)
 
-    const [xDir, setXDir] = useState(1)
-    const [yDir, setYDir] = useState(1)
+    const [xDir, setXDir] = useState(5)
+    const [yDir, setYDir] = useState(5)
 
     const [frameX, setFrameX] = useState(10)
     const [frameY, setFrameY] = useState(0)
@@ -26,8 +26,6 @@ const Canvas: React.FC<Props> = (props) => {
 
     const [spawnImmunity, setSpawnImmunity] = useState(true)
 
-    const [coords, setCoords] = useState([{ x: x, y: y }])
-
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
@@ -36,23 +34,22 @@ const Canvas: React.FC<Props> = (props) => {
                     setTimeout(function () {
                         setSpawnImmunity(false)
                     }, 2000)
-                    setCoords([{ x: x, y: y }])
                     setResetCanvas(false)
                     setFrameX(10)
                     setFrameY(0)
 
-                    setX(10)
-                    setY(10)
+                    setX(5)
+                    setY(5)
 
-                    setXDir(1)
-                    setYDir(1)
+                    setXDir(10)
+                    setYDir(10)
 
                     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
                     ctx.fillStyle = '#242424'
                     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
                 }, 50)
             }
-            if (updateFrame) {
+            if (updateFrame && !resetCanvas) {
                 setUpdateFrame(false)
 
                 ctx.beginPath()
@@ -90,21 +87,17 @@ const Canvas: React.FC<Props> = (props) => {
                 getPixelColor(Math.round(x + xDir * 5), Math.round(y + yDir * 5)) != `rgb(36,36,36)` &&
                 !spawnImmunity
             ) {
-                // console.log(getPixelColor(Math.round(x + xDir * 5), Math.round(y + yDir * 5)))
                 setResetCanvas(true)
             }
 
             if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
             if (y < 0 || y > ctx.canvas.height) setResetCanvas(true)
 
-            ctx.fillStyle = '#000000'
             let r = 256
             let g = Math.floor(Math.random() * 100)
             let b = Math.floor(Math.random() * 100)
             let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
 
-            // var canvasColor = imageData.data[(x * ctx.canvas.width + y) * 4]
-            // console.log(canvasColor)
             ctx.fillStyle = color
             ctx.beginPath()
             ctx.arc(x, y, 15, 0, 2 * Math.PI)
