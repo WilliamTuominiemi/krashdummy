@@ -1,9 +1,12 @@
 import React, { useRef, useEffect, useCallback, useState } from 'react'
+import { io } from 'socket.io-client'
 
 interface Props {
     width: number
     height: number
 }
+
+const socket = io('http://localhost:8080')
 
 const Canvas: React.FC<Props> = (props) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -130,9 +133,15 @@ const Canvas: React.FC<Props> = (props) => {
 
                 setTimeout(() => {
                     if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
+                        socket.emit('place', { x: Math.round(x / 10) * 10, y: Math.round(y / 10) * 10 })
+
                         setX(xDir / speed + x)
                         setY(yDir / speed + y)
                     }
+
+                    socket.on('place-client', (coord) => {
+                        console.log(coord)
+                    })
 
                     setChanging(false)
                 }, 10)
