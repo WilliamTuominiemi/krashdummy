@@ -29,6 +29,9 @@ const Canvas: React.FC<Props> = (props) => {
 
     const [speed, setSpeed] = useState(10)
 
+    const [prevUpdateX, setPrevUpdateX] = useState(0)
+    const [prevUpdateY, setPrevUpdateY] = useState(0)
+
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
@@ -57,24 +60,26 @@ const Canvas: React.FC<Props> = (props) => {
 
                 ctx.beginPath()
                 ctx.rect(frameX, frameY, 20, 20)
-                let r = Math.floor(Math.random() * 200)
-                let g = Math.floor(Math.random() * 200)
+                let r = Math.floor(Math.random() * 50)
+                let g = Math.floor(Math.random() * 50)
                 let b = 256
                 let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
                 ctx.fillStyle = color
                 ctx.fill()
 
+                const alternator = 2
+
                 if (frameX < ctx.canvas.width - 20 && frameY === 0) {
-                    setFrameX(frameX + speed / 5)
+                    setFrameX(frameX + speed / alternator)
                 }
                 if (frameX === ctx.canvas.width - 20 && frameY < ctx.canvas.height - 20) {
-                    setFrameY(frameY + speed / 5)
+                    setFrameY(frameY + speed / alternator)
                 }
                 if (frameY === ctx.canvas.height - 20 && frameX > 0) {
-                    setFrameX(frameX - speed / 5)
+                    setFrameX(frameX - speed / alternator)
                 }
                 if (frameX === 0 && frameY > 0) {
-                    setFrameY(frameY - speed / 5)
+                    setFrameY(frameY - speed / alternator)
                 }
                 if (frameX === 0 && frameY === 0) {
                     setResetCanvas(true)
@@ -133,14 +138,25 @@ const Canvas: React.FC<Props> = (props) => {
 
                 setTimeout(() => {
                     if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
-                        socket.emit('place', { x: Math.round(x / 10) * 10, y: Math.round(y / 10) * 10 })
+                        let r_n = 50
+                        const X = Math.round(x / r_n) * r_n
+                        const Y = Math.round(x / r_n) * r_n
+
+                        if (prevUpdateX != X && prevUpdateY != Y) {
+                            socket.emit('place', {
+                                x: X,
+                                y: Y,
+                            })
+                            setPrevUpdateX(X)
+                            setPrevUpdateY(Y)
+                        }
 
                         setX(xDir / speed + x)
                         setY(yDir / speed + y)
                     }
 
                     socket.on('place-client', (coord) => {
-                        console.log(coord)
+                        // console.log(coord)
                     })
 
                     setChanging(false)
