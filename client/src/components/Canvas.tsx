@@ -1,3 +1,4 @@
+import { type } from 'os'
 import React, { useRef, useEffect, useCallback, useState } from 'react'
 import { convertTypeAcquisitionFromJson, isConditionalExpression } from 'typescript'
 
@@ -23,12 +24,18 @@ const Canvas: React.FC<Props> = (props) => {
     const [resetCanvas, setResetCanvas] = useState(true)
     const [updateFrame, setUpdateFrame] = useState(true)
 
+    const [spawnImmunity, setSpawnImmunity] = useState(true)
+
     const [coords, setCoords] = useState([{ x: x, y: y }])
 
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
                 setTimeout(() => {
+                    setSpawnImmunity(true)
+                    setTimeout(function () {
+                        setSpawnImmunity(false)
+                    }, 2000)
                     setCoords([{ x: x, y: y }])
                     setResetCanvas(false)
                     setFrameX(10)
@@ -72,22 +79,19 @@ const Canvas: React.FC<Props> = (props) => {
                 if (frameX === 0 && frameY === 0) {
                     setResetCanvas(true)
                 }
-                // console.log(Math.abs(coords[coords.length - 1].x) - Math.abs(x))
+            }
 
-                // setCoords([...coords, { x: x, y: y }])
-                if (
-                    -10 > Math.abs(coords[coords.length - 1].x) - Math.abs(x) ||
-                    Math.abs(coords[coords.length - 1].x) - Math.abs(x) > 10 ||
-                    -10 > Math.abs(coords[coords.length - 1].y) - Math.abs(y) ||
-                    Math.abs(coords[coords.length - 1].y) - Math.abs(y) > 10
-                ) {
-                    setCoords([...coords, { x: x, y: y }])
+            function getPixelColor(x: number, y: number): string {
+                const p = ctx.getImageData(x, y, 1, 1).data
+                return `rgb(${p[0]},${p[1]},${p[2]})`
+            }
 
-                    console.log(coords)
-                    // console.log(Math.abs(coords[coords.length - 1].x) - Math.abs(x))
-
-                    // console.log(coords[coords.length - 1])
-                }
+            if (
+                getPixelColor(Math.round(x + xDir * 5), Math.round(y + yDir * 5)) != `rgb(36,36,36)` &&
+                !spawnImmunity
+            ) {
+                // console.log(getPixelColor(Math.round(x + xDir * 5), Math.round(y + yDir * 5)))
+                setResetCanvas(true)
             }
 
             if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
@@ -98,12 +102,15 @@ const Canvas: React.FC<Props> = (props) => {
             let g = Math.floor(Math.random() * 100)
             let b = Math.floor(Math.random() * 100)
             let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
+
+            // var canvasColor = imageData.data[(x * ctx.canvas.width + y) * 4]
+            // console.log(canvasColor)
             ctx.fillStyle = color
             ctx.beginPath()
             ctx.arc(x, y, 15, 0, 2 * Math.PI)
             ctx.fill()
         },
-        [frameX, frameY, x, y, resetCanvas, updateFrame]
+        [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity]
     )
 
     useEffect(() => {
@@ -112,6 +119,10 @@ const Canvas: React.FC<Props> = (props) => {
         setInterval(function () {
             setUpdateFrame(true)
         }, step)
+
+        setTimeout(function () {
+            setSpawnImmunity(false)
+        }, 2000)
     }, [])
 
     useEffect(() => {
