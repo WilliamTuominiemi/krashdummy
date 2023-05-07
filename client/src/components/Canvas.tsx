@@ -114,9 +114,9 @@ const Canvas: React.FC<Props> = (props) => {
             ctx.arc(x, y, 15, 0, 2 * Math.PI)
             ctx.fill()
 
-            let r_ = Math.floor(Math.random() * 100)
+            let r_ = Math.floor(Math.random() * 256)
             let g_ = 256
-            let b_ = Math.floor(Math.random() * 100)
+            let b_ = Math.floor(Math.random() * 256)
             let color_ = 'rgb(' + r_ + ', ' + g_ + ', ' + b_ + ')'
 
             ctx.fillStyle = color_
@@ -124,7 +124,7 @@ const Canvas: React.FC<Props> = (props) => {
             ctx.arc(ctx.canvas.width - o_x, ctx.canvas.height - o_y, 15, 0, 2 * Math.PI)
             ctx.fill()
         },
-        [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity]
+        [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity, o_x, o_y]
     )
 
     useEffect(() => {
@@ -151,11 +151,12 @@ const Canvas: React.FC<Props> = (props) => {
 
                 setTimeout(() => {
                     if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
-                        let r_n = 50
+                        let r_n = 10
                         const X = Math.round(x / r_n) * r_n
-                        const Y = Math.round(x / r_n) * r_n
+                        const Y = Math.round(y / r_n) * r_n
 
-                        if (prevUpdateX != X && prevUpdateY != Y) {
+                        if (prevUpdateX != X || prevUpdateY != Y) {
+                            console.log(X, Y)
                             socket.emit('place', {
                                 x: X,
                                 y: Y,

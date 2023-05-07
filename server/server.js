@@ -10,7 +10,7 @@ io.on('connect', (socket) => {
     let prev_coord = { x: 0, y: 0 }
 
     socket.on('place', (coord) => {
-        if (coord.x != prev_coord.x && prev_coord.y != coord.y) {
+        if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
             // console.log(coord)
             prev_coord = coord
             socket.emit('place-client', coord)
