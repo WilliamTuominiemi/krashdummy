@@ -70,7 +70,7 @@ const Canvas: React.FC<Props> = (props) => {
                 ctx.fillStyle = color
                 ctx.fill()
 
-                const alternator = 2
+                const alternator = 5
 
                 if (frameX < ctx.canvas.width - 20 && frameY === 0) {
                     setFrameX(frameX + speed / alternator)
@@ -111,7 +111,7 @@ const Canvas: React.FC<Props> = (props) => {
 
             ctx.fillStyle = color
             ctx.beginPath()
-            ctx.arc(x, y, 15, 0, 2 * Math.PI)
+            ctx.arc(Math.round(x / 20) * 20, Math.round(y / 20) * 20, 15, 0, 2 * Math.PI)
             ctx.fill()
 
             let r_ = Math.floor(Math.random() * 256)
@@ -151,12 +151,11 @@ const Canvas: React.FC<Props> = (props) => {
 
                 setTimeout(() => {
                     if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
-                        let r_n = 10
+                        let r_n = 20
                         const X = Math.round(x / r_n) * r_n
                         const Y = Math.round(y / r_n) * r_n
 
                         if (prevUpdateX != X || prevUpdateY != Y) {
-                            console.log(X, Y)
                             socket.emit('place', {
                                 x: X,
                                 y: Y,

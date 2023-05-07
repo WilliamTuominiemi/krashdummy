@@ -5,7 +5,6 @@ export default function Home() {
     const [resolution, setResolution] = useState<any[]>([])
 
     useEffect(() => {
-        console.log('window.innerHeight', window.innerHeight)
         setResolution([window.innerWidth, window.innerHeight])
     }, [])
 
