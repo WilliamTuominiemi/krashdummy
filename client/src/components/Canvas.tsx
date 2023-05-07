@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useState } from 'react'
+import React, { useRef, useEffect, useCallback, useState, use } from 'react'
 import { io } from 'socket.io-client'
 
 interface Props {
@@ -31,6 +31,9 @@ const Canvas: React.FC<Props> = (props) => {
 
     const [prevUpdateX, setPrevUpdateX] = useState(0)
     const [prevUpdateY, setPrevUpdateY] = useState(0)
+
+    const [o_x, setO_x] = useState(0)
+    const [o_y, setO_y] = useState(0)
 
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
@@ -110,6 +113,16 @@ const Canvas: React.FC<Props> = (props) => {
             ctx.beginPath()
             ctx.arc(x, y, 15, 0, 2 * Math.PI)
             ctx.fill()
+
+            let r_ = Math.floor(Math.random() * 100)
+            let g_ = 256
+            let b_ = Math.floor(Math.random() * 100)
+            let color_ = 'rgb(' + r_ + ', ' + g_ + ', ' + b_ + ')'
+
+            ctx.fillStyle = color_
+            ctx.beginPath()
+            ctx.arc(ctx.canvas.width - o_x, ctx.canvas.height - o_y, 15, 0, 2 * Math.PI)
+            ctx.fill()
         },
         [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity]
     )
@@ -157,6 +170,8 @@ const Canvas: React.FC<Props> = (props) => {
 
                     socket.on('place-client', (coord) => {
                         // console.log(coord)
+                        setO_x(coord.x)
+                        setO_y(coord.y)
                     })
 
                     setChanging(false)
