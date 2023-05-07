@@ -1,6 +1,4 @@
-import { type } from 'os'
 import React, { useRef, useEffect, useCallback, useState } from 'react'
-import { convertTypeAcquisitionFromJson, isConditionalExpression } from 'typescript'
 
 interface Props {
     width: number
@@ -25,6 +23,8 @@ const Canvas: React.FC<Props> = (props) => {
     const [updateFrame, setUpdateFrame] = useState(true)
 
     const [spawnImmunity, setSpawnImmunity] = useState(true)
+
+    const [speed, setSpeed] = useState(10)
 
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
@@ -62,16 +62,16 @@ const Canvas: React.FC<Props> = (props) => {
                 ctx.fill()
 
                 if (frameX < ctx.canvas.width - 20 && frameY === 0) {
-                    setFrameX(frameX + 10)
+                    setFrameX(frameX + speed / 5)
                 }
                 if (frameX === ctx.canvas.width - 20 && frameY < ctx.canvas.height - 20) {
-                    setFrameY(frameY + 10)
+                    setFrameY(frameY + speed / 5)
                 }
                 if (frameY === ctx.canvas.height - 20 && frameX > 0) {
-                    setFrameX(frameX - 10)
+                    setFrameX(frameX - speed / 5)
                 }
                 if (frameX === 0 && frameY > 0) {
-                    setFrameY(frameY - 10)
+                    setFrameY(frameY - speed / 5)
                 }
                 if (frameX === 0 && frameY === 0) {
                     setResetCanvas(true)
@@ -129,7 +129,6 @@ const Canvas: React.FC<Props> = (props) => {
                 setChanging(true)
 
                 setTimeout(() => {
-                    const speed = 5
                     if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
                         setX(xDir / speed + x)
                         setY(yDir / speed + y)
