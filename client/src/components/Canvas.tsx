@@ -127,7 +127,7 @@ const Canvas: React.FC<Props> = (props) => {
                 ctx.fill()
             }
         },
-        [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity, o_x, o_y]
+        [resetCanvas, updateFrame, x, xDir, y, yDir, spawnImmunity, frameX, frameY, speed, o_x, o_y]
     )
 
     useEffect(() => {
@@ -191,7 +191,7 @@ const Canvas: React.FC<Props> = (props) => {
         return () => {
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [draw, x, y, changing, xDir, yDir, o_x, o_y])
+    }, [draw, x, y, changing, xDir, yDir, o_x, o_y, resetCanvas, speed, updateFrame, prevUpdateX, prevUpdateY])
 
     const followMouse = (e: any) => {
         if (e.buttons === 1) {
