@@ -11,12 +11,9 @@ io.on('connect', (socket) => {
 
     socket.on('place', (coord) => {
         if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
-            // console.log(coord)
             prev_coord = coord
             socket.emit('place-client', coord)
         }
-        // console.log(coord)
-        // socket.emit('place-client', coord)
     })
 
     socket.on('disconnect', function () {

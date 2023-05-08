@@ -38,12 +38,13 @@ const Canvas: React.FC<Props> = (props) => {
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
+                setResetCanvas(false)
+
                 setTimeout(() => {
                     setSpawnImmunity(true)
                     setTimeout(function () {
                         setSpawnImmunity(false)
                     }, 2000)
-                    setResetCanvas(false)
                     setFrameX(10)
                     setFrameY(0)
 
@@ -101,34 +102,36 @@ const Canvas: React.FC<Props> = (props) => {
                 setResetCanvas(true)
             }
 
-            if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
-            if (y < 0 || y > ctx.canvas.height) setResetCanvas(true)
+            if (updateFrame) {
+                if (x < 0 || x > ctx.canvas.width) setResetCanvas(true)
+                if (y < 0 || y > ctx.canvas.height) setResetCanvas(true)
 
-            let r = 256
-            let g = Math.floor(Math.random() * 100)
-            let b = Math.floor(Math.random() * 100)
-            let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
+                let r = 256
+                let g = Math.floor(Math.random() * 100)
+                let b = Math.floor(Math.random() * 100)
+                let color = 'rgb(' + r + ', ' + g + ', ' + b + ')'
 
-            ctx.fillStyle = color
-            ctx.beginPath()
-            ctx.arc(Math.round(x / 20) * 20, Math.round(y / 20) * 20, 15, 0, 2 * Math.PI)
-            ctx.fill()
+                ctx.fillStyle = color
+                ctx.beginPath()
+                ctx.arc(Math.round(x / 20) * 20, Math.round(y / 20) * 20, 15, 0, 2 * Math.PI)
+                ctx.fill()
 
-            let r_ = Math.floor(Math.random() * 256)
-            let g_ = 256
-            let b_ = Math.floor(Math.random() * 256)
-            let color_ = 'rgb(' + r_ + ', ' + g_ + ', ' + b_ + ')'
+                let r_ = Math.floor(Math.random() * 256)
+                let g_ = 256
+                let b_ = Math.floor(Math.random() * 256)
+                let color_ = 'rgb(' + r_ + ', ' + g_ + ', ' + b_ + ')'
 
-            ctx.fillStyle = color_
-            ctx.beginPath()
-            ctx.arc(ctx.canvas.width - o_x, ctx.canvas.height - o_y, 15, 0, 2 * Math.PI)
-            ctx.fill()
+                ctx.fillStyle = color_
+                ctx.beginPath()
+                ctx.arc(ctx.canvas.width - o_x, ctx.canvas.height - o_y, 15, 0, 2 * Math.PI)
+                ctx.fill()
+            }
         },
         [frameX, frameY, x, y, resetCanvas, updateFrame, xDir, yDir, spawnImmunity, o_x, o_y]
     )
 
     useEffect(() => {
-        const step = 100
+        const step = 10
 
         setInterval(function () {
             setUpdateFrame(true)
@@ -148,9 +151,8 @@ const Canvas: React.FC<Props> = (props) => {
         const render = () => {
             if (!changing || !resetCanvas) {
                 setChanging(true)
-
-                setTimeout(() => {
-                    if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
+                if (!isNaN(xDir / speed + x) || (!isNaN(yDir / speed + y) && !resetCanvas)) {
+                    if (updateFrame) {
                         let r_n = 20
                         const X = Math.round(x / r_n) * r_n
                         const Y = Math.round(y / r_n) * r_n
@@ -167,13 +169,17 @@ const Canvas: React.FC<Props> = (props) => {
                         setX(xDir / speed + x)
                         setY(yDir / speed + y)
                     }
-
                     socket.on('place-client', (coord) => {
-                        // console.log(coord)
-                        setO_x(coord.x)
-                        setO_y(coord.y)
+                        if (context && updateFrame) {
+                            if (coord.x != o_x || coord.y != o_y) {
+                                setO_x(coord.x)
+                                setO_y(coord.y)
+                            }
+                        }
                     })
+                }
 
+                setTimeout(() => {
                     setChanging(false)
                 }, 10)
             }
@@ -185,7 +191,7 @@ const Canvas: React.FC<Props> = (props) => {
         return () => {
             window.cancelAnimationFrame(animationFrameId)
         }
-    }, [draw, x, y, changing, xDir, yDir])
+    }, [draw, x, y, changing, xDir, yDir, o_x, o_y])
 
     const followMouse = (e: any) => {
         if (e.buttons === 1) {
