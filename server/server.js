@@ -7,11 +7,14 @@ const io = require('socket.io')(8080, {
 io.on('connect', (socket) => {
     socket.join('room1')
     let rooms = io.sockets.adapter.rooms
-    let room1SetValues = rooms.get('room1')
-
-    console.log(room1SetValues, room1SetValues.size)
+    let room_size = rooms.get('room1')
+    socket.emit('room-size', room_size)
 
     let prev_coord = { x: 0, y: 0 }
+
+    socket.on('join', () => {
+        socket.join('room1')
+    })
 
     socket.on('place', (coord) => {
         if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
