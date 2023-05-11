@@ -131,6 +131,7 @@ const Canvas: React.FC<Props> = (props) => {
     )
 
     useEffect(() => {
+        socket.emit('join')
         const step = 10
 
         setInterval(function () {
