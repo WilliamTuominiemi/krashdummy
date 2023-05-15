@@ -17,10 +17,14 @@ export default function Home() {
 
     return (
         <div className="flex flex-col justify-center items-center h-screen w-screen">
-            <Link href="/play" className="text-blue-500 hover:text-blue-800 font-bold text-2xl">
-                PLAY
-            </Link>
-            <p className="text-blue-600">Queue: {roomSize}</p>
+            {roomSize < 2 ? (
+                <Link href="/play" className="text-blue-500 hover:text-blue-800 font-bold text-2xl">
+                    PLAY
+                </Link>
+            ) : (
+                <h1 className="text-blue-500 font-bold text-2xl">THE ROOM IS CURRENTLY FULL</h1>
+            )}
+            <p className="text-blue-600">Players: {roomSize}</p>
         </div>
     )
 }
