@@ -27,7 +27,7 @@ io.on('connect', (socket) => {
     socket.on('place', (coord) => {
         if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
             prev_coord = coord
-            socket.emit('place-client', coord)
+            socket.broadcast.to('room1').emit('place-client', coord)
         }
     })
 
