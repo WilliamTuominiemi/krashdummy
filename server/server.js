@@ -17,7 +17,7 @@ io.on('connect', (socket) => {
         let room_size = rooms.get('room1')
         if (room_size !== undefined) {
             console.log(room_size.size)
-            socket.emit('get_room', room_size.size)
+            io.emit('get_room', room_size.size)
         }
     })
 
