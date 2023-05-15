@@ -5,10 +5,6 @@ const io = require('socket.io')(8080, {
 })
 
 io.on('connect', (socket) => {
-    let rooms = io.sockets.adapter.rooms
-    let room_size = rooms.get('room1')
-    console.log(room_size)
-
     let prev_coord = { x: 0, y: 0 }
 
     socket.on('join', () => {
@@ -16,7 +12,6 @@ io.on('connect', (socket) => {
         let rooms = io.sockets.adapter.rooms
         let room_size = rooms.get('room1')
         if (room_size !== undefined) {
-            console.log(room_size.size)
             io.emit('get_room', room_size.size)
         }
     })
@@ -25,7 +20,6 @@ io.on('connect', (socket) => {
         let rooms = io.sockets.adapter.rooms
         let room_size = rooms.get('room1')
         if (room_size !== undefined) {
-            console.log(room_size.size)
             socket.emit('get_room', room_size.size)
         }
     })

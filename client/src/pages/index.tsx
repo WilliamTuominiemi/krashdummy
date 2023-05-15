@@ -6,10 +6,12 @@ import { io } from 'socket.io-client'
 const socket = io('http://localhost:8080')
 
 export default function Home() {
+    const [roomSize, setRoomSize] = useState(0)
+
     useEffect(() => {
         socket.emit('get_room')
         socket.on('get_room', (room) => {
-            console.log(room)
+            setRoomSize(room)
         })
     }, [])
 
@@ -18,7 +20,7 @@ export default function Home() {
             <Link href="/play" className="text-blue-500 hover:text-blue-800 font-bold text-2xl">
                 PLAY
             </Link>
-            <p className="text-blue-600">Queue: x</p>
+            <p className="text-blue-600">Queue: {roomSize}</p>
         </div>
     )
 }
