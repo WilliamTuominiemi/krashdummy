@@ -1,18 +1,34 @@
-const io = require('socket.io')(8080, {
+import Move from './controllers/Move.js'
+
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+
+const httpServer = createServer()
+const io = new Server(8080, {
     cors: {
         origin: ['http://localhost:3000'],
     },
 })
 
 io.on('connect', (socket) => {
-    let prev_coord = { x: 0, y: 0 }
+    console.log(socket.id)
+    // let prev_coord = { x: 0, y: 0 }
+
+    let joined = false
 
     socket.on('join', () => {
-        socket.join('room1')
-        let rooms = io.sockets.adapter.rooms
-        let room_size = rooms.get('room1')
-        if (room_size !== undefined) {
-            io.emit('get_room', room_size.size)
+        if (!joined) {
+            joined = true
+            socket.join('room1')
+            setInterval(() => {
+                console.log(socket.id, 'get POS')
+                socket.emit('req-move-data')
+            }, 1000)
+            let rooms = io.sockets.adapter.rooms
+            let room_size = rooms.get('room1')
+            if (room_size !== undefined) {
+                io.emit('get_room', room_size.size)
+            }
         }
     })
 
@@ -24,12 +40,12 @@ io.on('connect', (socket) => {
         }
     })
 
-    socket.on('place', (coord) => {
-        if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
-            prev_coord = coord
-            socket.broadcast.to('room1').emit('place-client', coord)
-        }
-    })
+    // socket.on('place', (coord) => {
+    //     if (coord.x != prev_coord.x || prev_coord.y != coord.y) {
+    //         prev_coord = coord
+    //         socket.broadcast.to('room1').emit('place-client', coord)
+    //     }
+    // })
 
     socket.on('disconnect', function () {
         socket.disconnect()

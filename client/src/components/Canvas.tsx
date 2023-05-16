@@ -35,6 +35,9 @@ const Canvas: React.FC<Props> = (props) => {
     const [o_x, setO_x] = useState(0)
     const [o_y, setO_y] = useState(0)
 
+    const [mouseX, setMouseX] = useState(0)
+    const [mouseY, setMouseY] = useState(0)
+
     const draw = useCallback(
         (ctx: CanvasRenderingContext2D) => {
             if (resetCanvas) {
@@ -131,6 +134,17 @@ const Canvas: React.FC<Props> = (props) => {
     )
 
     useEffect(() => {
+        socket.on('req-move-data', () => {
+            const data = {
+                currentPosition: { x: x, y: y },
+                mousePosition: {},
+            }
+            socket.emit('set-move-data', data)
+        })
+    }, [])
+
+    useEffect(() => {
+        console.log('join')
         socket.emit('join')
         const step = 10
 

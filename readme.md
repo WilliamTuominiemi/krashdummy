@@ -1,5 +1,7 @@
 # KrashDummy
 
+Whole thing currently broken, moving all the logic from front to back.
+
 ![GAME](/client/src/styles/public/KrashDummy.png)
 
 ## Installation
