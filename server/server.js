@@ -32,6 +32,10 @@ io.on('connect', (socket) => {
         }
     })
 
+    socket.on('set-move-data', (data) => {
+        console.log(data)
+    })
+
     socket.on('get_room', () => {
         let rooms = io.sockets.adapter.rooms
         let room_size = rooms.get('room1')
