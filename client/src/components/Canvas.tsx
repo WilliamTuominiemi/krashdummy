@@ -137,7 +137,8 @@ const Canvas: React.FC<Props> = (props) => {
         socket.on('req-move-data', () => {
             const data = {
                 currentPosition: { x: x, y: y },
-                mousePosition: {},
+                mousePosition: { x: mouseX, y: mouseY },
+                canvasSize: {},
             }
             socket.emit('set-move-data', data)
         })
@@ -210,6 +211,9 @@ const Canvas: React.FC<Props> = (props) => {
 
     const followMouse = (e: any) => {
         if (e.buttons === 1) {
+            setMouseX(e.clientX - e.target.offsetLeft - x)
+            setMouseY(e.clientY - e.target.offsetTop - y)
+
             let v_i = e.clientX - e.target.offsetLeft - x
             let v_j = e.clientY - e.target.offsetTop - y
 

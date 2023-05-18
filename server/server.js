@@ -11,7 +11,7 @@ const io = new Server(8080, {
 })
 
 io.on('connect', (socket) => {
-    console.log(socket.id)
+    // console.log(socket.id)
     // let prev_coord = { x: 0, y: 0 }
 
     let joined = false
@@ -21,7 +21,6 @@ io.on('connect', (socket) => {
             joined = true
             socket.join('room1')
             setInterval(() => {
-                console.log(socket.id, 'get POS')
                 socket.emit('req-move-data')
             }, 1000)
             let rooms = io.sockets.adapter.rooms
@@ -33,6 +32,7 @@ io.on('connect', (socket) => {
     })
 
     socket.on('set-move-data', (data) => {
+        Move(data)
         console.log(data)
     })
 
@@ -54,6 +54,7 @@ io.on('connect', (socket) => {
     socket.on('disconnect', function () {
         socket.disconnect()
 
+        joined = false
         console.log('disconnect')
     })
 })
