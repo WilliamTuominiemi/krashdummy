@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import Canvas from '@/components/Canvas'
+import Canvas from '@/components/_Canvas'
 
 export default function Play() {
     const [resolution, setResolution] = useState<any[]>([])
